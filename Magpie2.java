@@ -20,7 +20,57 @@ public class Magpie2
     {
         return "Hello, let's talk.";
     }
-    
+    private int findKeyword(String statement, String goal,
+                     int startPos)
+       {
+          String phrase = statement.trim();
+              // The only change to incorporate the startPos is in
+              // the line below
+              int psn = phrase.toLowerCase().indexOf(
+                             goal.toLowerCase(), startPos);
+
+              // Refinement--make sure the goal isn't part of a
+              // word
+              while (psn >= 0)
+              {
+                     // Find the string of length 1 before and after
+                     // the word
+                     String before = " ", after = " ";
+                     if (psn > 0)
+                     {
+                             before = phrase.substring(psn - 1, psn)
+                                             .toLowerCase();
+                     }
+                     if (psn + goal.length() < phrase.length())
+                     {
+                             after = phrase.substring(
+                                             psn + goal.length(),
+                                             psn + goal.length() + 1)
+                                             .toLowerCase();
+                     }
+
+         /* determine the values of psn, before, and after at this point */
+
+                     // If before and after aren't letters, we've
+                     // found the word
+                     if (((before.compareTo("a") < 0) || (before
+                                     .compareTo("z") > 0)) // before is not a
+                                                                                     // letter
+                                     && ((after.compareTo("a") < 0) || (after
+                                                     .compareTo("z") > 0)))
+                     {
+                             return psn;
+                     }
+
+                     // The last position didn't work, so let's find
+                     // the next, if there is one.
+                     psn = phrase.indexOf(goal.toLowerCase(),
+                                     psn + 1);
+
+              }
+
+             return -1;
+       }
     /**
      * Gives a response to a user statement
      * 
@@ -31,22 +81,22 @@ public class Magpie2
     public String getResponse(String statement)
     {
         String response = "";
-        if (statement.indexOf("no") >= 0)
+        if (findKeyword(statement, "no", 0) >= 0)
         {
             response = "Why so negative?";
         }
-        else if (statement.indexOf("mother") >= 0
-                || statement.indexOf("father") >= 0
-                || statement.indexOf("sister") >= 0
-                || statement.indexOf("brother") >= 0)
+        else if (findKeyword(statement, "mother", 0) >= 0
+                || findKeyword(statement, "father", 0) >= 0
+                || findKeyword(statement, "sister", 0) >= 0
+                || findKeyword(statement, "brother", 0) >= 0)
         {
             response = "Tell me more about your family.";
         }
-        else if (statement.indexOf("dog") >= 0 || statement.indexOf("cat") >= 0)
+        else if (findKeyword(statement, "dog", 0) >= 0 || findKeyword(statement, "cat", 0) >= 0)
         {
             response = "Tell me more about your pets.";
         }
-        else if(statement.toLowerCase().indexOf("kaehms") >= 0)
+        else if(findKeyword(statement, "khaems", 0) >= 0)
         {
             response = "Sounds like a good teacher.";
         }
@@ -54,11 +104,11 @@ public class Magpie2
         {
             response = "Say something please.";
         }
-        else if(statement.toLowerCase().indexOf("justin") >= 0)
+        else if(findKeyword(statement, "justin", 0) >= 0)
             response = "Oh yes, Justin created me.";
-        else if(statement.toLowerCase().indexOf("smart") >= 0)
+        else if(findKeyword(statement, "smart", 0) >= 0)
             response = "Justin is very smart.";
-        else if(statement.toLowerCase().indexOf("clever") >= 0)
+        else if(findKeyword(statement, "clever", 0) >= 0)
             response = "The only clever person I know is Justin.";
         else
         {
